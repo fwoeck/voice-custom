@@ -1,11 +1,11 @@
 module Custom
 
-  cattr_reader :custom_conf, :rails_env
+  cattr_reader :conf, :rails_env
 
 
   def self.read_config
-    @@rails_env   = ENV['RAILS_ENV'] || 'development'
-    @@custom_conf = YAML.load(File.read(File.join('./config/app.yml')))
+    @@rails_env = ENV['RAILS_ENV'] || 'development'
+    @@conf      = YAML.load(File.read(File.join('./config/app.yml')))
   end
 
 

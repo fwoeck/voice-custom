@@ -4,7 +4,7 @@ class Server < Sinatra::Base
 
   configure {
     set :environment, Custom.rails_env
-    set :port,        Custom.port
+    set :port,        Custom.conf['port']
     set :server,      :puma
   }
 

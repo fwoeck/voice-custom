@@ -22,9 +22,9 @@ module AmqpManager
 
     def establish_connection
       @connection = Bunny.new(
-        host:     Custom.custom_conf['rabbit_host'],
-        user:     Custom.custom_conf['rabbit_user'],
-        password: Custom.custom_conf['rabbit_pass']
+        host:     Custom.conf['rabbit_host'],
+        user:     Custom.conf['rabbit_user'],
+        password: Custom.conf['rabbit_pass']
       ).tap { |c| c.start }
     rescue Bunny::TCPConnectionFailed
       sleep 1
@@ -37,7 +37,7 @@ module AmqpManager
 
       custom_queue.bind(custom_xchange, routing_key: 'voice.custom')
       custom_queue.subscribe { |delivery_info, metadata, payload|
-        CallEvent.log(payload)
+        # TODO
       }
     end
   end
