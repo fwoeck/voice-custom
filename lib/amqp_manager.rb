@@ -1,3 +1,6 @@
+require './lib/call_event'
+
+
 module AmqpManager
   class << self
 
@@ -37,7 +40,7 @@ module AmqpManager
 
       custom_queue.bind(custom_xchange, routing_key: 'voice.custom')
       custom_queue.subscribe { |delivery_info, metadata, payload|
-        # TODO
+        CallEvent.handle_update JSON.parse(payload)
       }
     end
   end
