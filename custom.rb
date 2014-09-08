@@ -11,10 +11,12 @@ Bundler.require
 require 'yaml'
 require 'json'
 
+Thread.abort_on_exception = true
 require './lib/custom'
 Custom.setup
 
 require './lib/amqp_manager'
 AmqpManager.start
 
+require './lib/customer'
 require './lib/server'
