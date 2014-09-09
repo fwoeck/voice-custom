@@ -15,6 +15,20 @@ module AmqpManager
     end
 
 
+    def rails_channel
+      Thread.current[:rails_channel] ||= @connection.create_channel
+    end
+
+    def rails_xchange
+      Thread.current[:rails_xchange] ||= rails_channel.topic('voice.rails', auto_delete: false)
+    end
+
+    def rails_publish(payload)
+      data = payload.to_json
+      rails_xchange.publish(data, routing_key: 'voice.rails')
+    end
+
+
     def shutdown
       @connection.close
     end
@@ -32,12 +46,27 @@ module AmqpManager
     end
 
 
+    def handle_request(data)
+      val = data['class'].constantize.send(data['verb'], *data['params'])
+      enc = Base64.encode64 Marshal.dump(val)
+      res = {res_to: data['req_from'], id: data['id'], value: enc}
+
+      AmqpManager.rails_publish(res)
+    end
+
+
     def start
       establish_connection
 
       custom_queue.bind(custom_xchange, routing_key: 'voice.custom')
       custom_queue.subscribe { |delivery_info, metadata, payload|
-        # TODO
+        data = JSON.parse(payload)
+
+        if data['req_from']
+          handle_request data
+        else
+          CallEvent.handle_update data
+        end
       }
     end
   end

@@ -10,11 +10,25 @@ Bundler.require
 
 require 'yaml'
 require 'json'
+require 'base64'
+require 'logger'
 
+Thread.abort_on_exception = false
 require './lib/custom'
 Custom.setup
 
+require './lib/zendesk_ticket'
+require './lib/history_entry'
+require './lib/call_event'
+require './lib/customer'
+require './lib/call'
+
 require './lib/amqp_manager'
+at_exit do
+  AmqpManager.shutdown
+  puts "#{Time.now.utc} Custom finished."
+end
 AmqpManager.start
 
-require './lib/server'
+puts "#{Time.now.utc} Custom started."
+sleep
