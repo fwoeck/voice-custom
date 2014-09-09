@@ -24,7 +24,7 @@ module AmqpManager
     end
 
     def rails_publish(payload)
-      data = payload.to_json
+      data = Marshal.dump(payload)
       rails_xchange.publish(data, routing_key: 'voice.rails')
     end
 
@@ -46,16 +46,12 @@ module AmqpManager
     end
 
 
-    def perform_action_on(data)
-      val = data['class'].constantize.send(data['verb'], *data['params'])
-      enc = Base64.encode64 Marshal.dump(val)
-      {res_to: data['req_from'], id: data['id'], value: enc}
-    end
-
-
     def handle_request(data)
-      AmqpManager.rails_publish(perform_action_on data)
-      puts "#{Time.now.utc} Performed request: #{data['class']}##{data['verb']}."
+      val = data[:class].constantize.send(data[:verb], *data[:params])
+      res = {res_to: data[:req_from], id: data[:id], value: val}
+
+      AmqpManager.rails_publish(res)
+      puts "#{Time.now.utc} Performed request: #{data[:class]}##{data[:verb]}(#{data[:params]})."
     end
 
 
@@ -64,12 +60,12 @@ module AmqpManager
 
       custom_queue.bind(custom_xchange, routing_key: 'voice.custom')
       custom_queue.subscribe { |delivery_info, metadata, payload|
-        data = JSON.parse(payload)
+        data = Marshal.load(payload)
 
-        if data['req_from']
-          handle_request data
+        if data[:req_from]
+          handle_request(data)
         else
-          CallEvent.handle_update data
+          CallEvent.handle_update(data)
         end
       }
     end
