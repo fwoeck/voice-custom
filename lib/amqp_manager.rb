@@ -46,12 +46,16 @@ module AmqpManager
     end
 
 
-    def handle_request(data)
+    def perform_action_on(data)
       val = data['class'].constantize.send(data['verb'], *data['params'])
       enc = Base64.encode64 Marshal.dump(val)
-      res = {res_to: data['req_from'], id: data['id'], value: enc}
+      {res_to: data['req_from'], id: data['id'], value: enc}
+    end
 
-      AmqpManager.rails_publish(res)
+
+    def handle_request(data)
+      AmqpManager.rails_publish(perform_action_on data)
+      puts "#{Time.now.utc} Performed request: #{data['class']}##{data['verb']}."
     end
 
 

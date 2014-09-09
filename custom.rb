@@ -19,16 +19,16 @@ Custom.setup
 
 require './lib/zendesk_ticket'
 require './lib/history_entry'
+require './lib/amqp_manager'
 require './lib/call_event'
 require './lib/customer'
 require './lib/call'
 
-require './lib/amqp_manager'
+AmqpManager.start
 at_exit do
   AmqpManager.shutdown
   puts "#{Time.now.utc} Custom finished."
 end
-AmqpManager.start
 
 puts "#{Time.now.utc} Custom started."
 sleep

@@ -1,7 +1,5 @@
-require 'json'
-
-
 class Call
+
   FORMAT = %w{target_id call_tag language skill extension caller_id hungup called_at mailbox queued_at hungup_at dispatched_at}
            .map(&:to_sym)
 

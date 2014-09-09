@@ -28,7 +28,7 @@ module Custom
       config.password =  Custom.conf['zendesk_pass']
 
       config.logger = Logger.new(STDOUT)
-      config.logger.level = Logger::WARN if Custom.rails_env == 'production'
+      config.logger.level = Logger::WARN
     end
   end
 
