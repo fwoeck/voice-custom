@@ -27,8 +27,8 @@ require './lib/call'
 AmqpManager.start
 at_exit do
   AmqpManager.shutdown
-  puts "#{Time.now.utc} Custom finished."
+  puts ":: #{Time.now.utc} Custom finished.."
 end
 
-puts "#{Time.now.utc} Custom started."
+puts ":: #{Time.now.utc} Custom started.."
 sleep

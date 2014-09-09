@@ -19,7 +19,7 @@ class CallEvent
     def handle_agent_update(data)
       if (agent = get_agent_from data)
         create_history_for(data, agent)
-        puts "#{Time.now.utc} Handled agent update: ext. #{agent}."
+        puts ":: #{Time.now.utc} Handled agent update: ext. #{agent}"
         return true
       end
     end
@@ -43,7 +43,7 @@ class CallEvent
       if data['name'] == 'CallState'
         yield_to_call(data) do |call|
           call.create_history_entry_for_mailbox
-          puts "#{Time.now.utc} Handled call update: #{call.target_id}."
+          puts ":: #{Time.now.utc} Handled call update: #{call.target_id}"
         end
       end
     end
