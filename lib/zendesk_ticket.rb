@@ -1,12 +1,10 @@
 class ZendeskTicket
 
-  include ActiveModel::Serialization
-
   attr_accessor :id, :requester_id, :submitter_id, :assignee_id, :created_at,
-                :updated_at, :status, :priority, :subject, :description
+                :updated_at, :status, :priority, :subject, :description, :url
 
 
-  def url
+  def get_url
     "https://#{Custom.conf['zendesk_domain']}.zendesk.com/agent/#/tickets/#{id}"
   end
 
@@ -39,6 +37,7 @@ class ZendeskTicket
     def build_from(zt)
       new.tap { |t|
         t.id           = zt.id
+        t.url          = t.get_url
         t.status       = zt.status
         t.subject      = zt.subject
         t.priority     = zt.priority

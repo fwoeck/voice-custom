@@ -1,6 +1,3 @@
-require 'logger'
-
-
 module Custom
 
   cattr_reader :conf, :redis_db, :rails_env, :zendesk

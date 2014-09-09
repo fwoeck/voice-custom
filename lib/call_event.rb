@@ -1,6 +1,3 @@
-require './lib/call'
-
-
 class CallEvent
 
   include Mongoid::Document

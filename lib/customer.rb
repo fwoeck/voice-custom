@@ -1,6 +1,3 @@
-require './lib/history_entry'
-
-
 class Customer
 
   include Mongoid::Document
