@@ -52,7 +52,7 @@ class Call
 
   def self.find(tcid)
     return unless tcid
-    fields = JSON.parse(Custom.redis_db.get(call_keyname tcid) || new.headers.to_json)
+    fields = Marshal.load(Custom.redis_db.get(call_keyname tcid) || Marshal.dump(new.headers))
     fields['TargetId'] = tcid
 
     new Call::FORMAT.each_with_object({}) { |sym, hash|
