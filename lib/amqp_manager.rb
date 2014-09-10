@@ -51,7 +51,7 @@ module AmqpManager
       res = {res_to: data[:req_from], id: data[:id], value: val}
 
       AmqpManager.rails_publish(res)
-      puts ":: #{Time.now.utc} Performed request: #{data[:class]}##{data[:verb]}(#{data[:params]})"
+      puts ":: #{Time.now.utc} Performed request: #{data[:class]}##{data[:verb]}(#{data[:params]})."
     end
 
 
