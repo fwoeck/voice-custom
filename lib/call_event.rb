@@ -19,7 +19,7 @@ class CallEvent
     def handle_agent_update(data)
       if (agent = get_agent_from data)
         create_history_for(data, agent)
-        puts ":: #{Time.now.utc} Handled agent update: ext. #{agent}"
+        puts ":: #{Time.now.utc} Handled agent update for ext. #{agent}"
         return true
       end
     end
