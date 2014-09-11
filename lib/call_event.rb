@@ -15,19 +15,13 @@ class CallEvent
       if data.is_a?(Call)
         handle_call_update(data)
       else
-        handle_agent_update(data)
+        create_history_for(data)
       end
     end
 
 
-    def handle_agent_update(data)
-      agent = data[:headers][:extension]
-      create_history_for(data, agent)
-    end
-
-
-    def create_history_for(data, agent)
-      yield_to_call(data) do |call|
+    def create_history_for(agent)
+      yield_to_call(agent) do |call|
         call.create_customer_history_entry(agent)
         puts ":: #{Time.now.utc} Added history entry for #{call.call_id}."
       end
@@ -40,8 +34,8 @@ class CallEvent
     end
 
 
-    def yield_to_call(data, &block)
-      if (tcid = data[:call_id])
+    def yield_to_call(agent, &block)
+      if (tcid = agent.call_id)
         if (call = Call.find tcid)
           block.call(call)
           return tcid
