@@ -6,12 +6,18 @@ class Call
   attr_accessor *FORMAT
 
 
+  def handle_update
+    create_history_entry_for_mailbox
+    puts ":: #{Time.now.utc} Added mailbox entry for #{call_id}."
+  end
+
+
   def create_history_entry_for_mailbox
     create_customer_history_entry(nil, mailbox)
   end
 
 
-  def create_customer_history_entry(agent, mailbox=nil)
+  def create_customer_history_entry(extension, mailbox=nil)
     cust = fetch_or_create_customer(caller_id)
     entr = cust.history_entries
 
@@ -19,7 +25,7 @@ class Call
       e.call_id == call_id
     } || entr.create(
       mailbox:   mailbox,   call_id:   call_id,
-      caller_id: caller_id, agent_ext: agent
+      caller_id: caller_id, extension: extension
     )
   end
 

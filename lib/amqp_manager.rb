@@ -46,32 +46,12 @@ module AmqpManager
     end
 
 
-    def handle_request(data)
-      val = data[:class].constantize.send(data[:verb], *data[:params])
-      res = {res_to: data[:req_from], id: data[:id], value: val}
-
-      AmqpManager.rails_publish(res)
-      puts ":: #{Time.now.utc} Performed request: #{data[:class]}##{data[:verb]}(#{data[:params]})."
-    end
-
-
-    def is_rpc_request?(data)
-      data.is_a?(Hash) && data[:req_from]
-    end
-
-
     def start
       establish_connection
 
       custom_queue.bind(custom_xchange, routing_key: 'voice.custom')
       custom_queue.subscribe { |delivery_info, metadata, payload|
-        data = Marshal.load(payload)
-
-        if is_rpc_request?(data)
-          handle_request(data)
-        else
-          CallEvent.handle_update(data)
-        end
+        Marshal.load(payload).handle_update
       }
     end
   end
