@@ -19,6 +19,7 @@ Custom.setup
 
 require './lib/zendesk_ticket'
 require './lib/history_entry'
+require './lib/amqp_request'
 require './lib/amqp_manager'
 require './lib/customer'
 require './lib/agent'
