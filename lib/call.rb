@@ -1,13 +1,12 @@
 class Call
 
-  FORMAT = %w{target_id call_tag language skill extension caller_id hungup called_at mailbox queued_at hungup_at dispatched_at}
+  FORMAT = %w{call_id call_tag language skill extension caller_id hungup called_at mailbox queued_at hungup_at dispatched_at}
            .map(&:to_sym)
 
   attr_accessor *FORMAT
 
 
   def create_history_entry_for_mailbox
-    return if mailbox.blank?
     create_customer_history_entry(nil, mailbox)
   end
 
@@ -17,9 +16,9 @@ class Call
     entr = cust.history_entries
 
     entr.detect { |e|
-      e.call_id == target_id
+      e.call_id == call_id
     } || entr.create(
-      mailbox:   mailbox,   call_id:   target_id,
+      mailbox:   mailbox,   call_id:   call_id,
       caller_id: caller_id, agent_ext: agent
     )
   end

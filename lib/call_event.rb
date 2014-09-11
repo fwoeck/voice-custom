@@ -2,9 +2,9 @@ class CallEvent
 
   include Mongoid::Document
 
-  field :target_call_id, type: String
-  field :timestamp,      type: String
-  field :headers,        type: Hash
+  field :call_id,   type: String
+  field :headers,   type: Hash
+  field :timestamp, type: Time
 
   default_scope -> { asc(:timestamp) }
 
@@ -12,45 +12,36 @@ class CallEvent
   class << self
 
     def handle_update(data)
-      handle_agent_update(data) || handle_call_update(data)
+      if data.is_a?(Call)
+        handle_call_update(data)
+      else
+        handle_agent_update(data)
+      end
     end
 
 
     def handle_agent_update(data)
-      if (agent = get_agent_from data)
-        create_history_for(data, agent)
-        puts ":: #{Time.now.utc} Handled agent update for ext. #{agent}."
-        return true
-      end
-    end
-
-
-    def get_agent_from(data)
-      if data[:name] == 'AgentEvent'
-        data[:headers][:extension]
-      end
+      agent = data[:headers][:extension]
+      create_history_for(data, agent)
     end
 
 
     def create_history_for(data, agent)
       yield_to_call(data) do |call|
         call.create_customer_history_entry(agent)
+        puts ":: #{Time.now.utc} Added history entry for #{call.call_id}."
       end
     end
 
 
-    def handle_call_update(data)
-      if data[:name] == 'CallState'
-        yield_to_call(data) do |call|
-          call.create_history_entry_for_mailbox
-          puts ":: #{Time.now.utc} Handled call update for #{call.target_id}."
-        end
-      end
+    def handle_call_update(call)
+      call.create_history_entry_for_mailbox
+      puts ":: #{Time.now.utc} Added mailbox entry for #{call.call_id}."
     end
 
 
     def yield_to_call(data, &block)
-      if (tcid = data[:target_call_id])
+      if (tcid = data[:call_id])
         if (call = Call.find tcid)
           block.call(call)
           return tcid
