@@ -16,15 +16,18 @@ class Customer
     tap { |c|
       c.full_name = (par[:full_name] || "").strip
       c.email     = (par[:email] || "").strip.downcase
+
       c.manage_zendesk_account(par[:zendesk_id])
-    }.save
+      c.save
+    }
   end
 
 
-  def update_history_with(hid, par)
-    entry = history_entries.find(hid)
-    entry.remarks = (par[:remarks] || "").strip
-    entry.save
+  def update_history_with(par)
+    if (entry = history_entries.find par[:entry_id])
+      entry.remarks = (par[:remarks] || "").strip
+      entry.save
+    end
   end
 
 
@@ -37,6 +40,18 @@ class Customer
     elsif !zendesk_id.blank?
       update_zendesk_record
     end
+  end
+
+
+  def self.update_with(par)
+    cust = Customer.find(par[:id])
+    cust.update_with(par) if cust
+  end
+
+
+  def self.update_history_with(par)
+    cust = Customer.find(par[:customer_id])
+    cust.update_history_with(par) if cust
   end
 
 
