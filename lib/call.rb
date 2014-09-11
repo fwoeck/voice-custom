@@ -6,6 +6,12 @@ class Call
   attr_accessor *FORMAT
 
 
+  def handle_update
+    create_history_entry_for_mailbox
+    puts ":: #{Time.now.utc} Added mailbox entry for #{call_id}."
+  end
+
+
   def create_history_entry_for_mailbox
     create_customer_history_entry(nil, mailbox)
   end

@@ -70,7 +70,7 @@ module AmqpManager
         if is_rpc_request?(data)
           handle_request(data)
         else
-          CallEvent.handle_update(data)
+          data.handle_update
         end
       }
     end
