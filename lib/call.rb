@@ -6,20 +6,6 @@ class Call
   attr_accessor *FORMAT
 
 
-  def initialize(par=nil)
-    Call::FORMAT.each do |sym|
-      self.send "#{sym}=", par.fetch(sym, nil)
-    end if par
-  end
-
-
-  def headers
-    Call::FORMAT.each_with_object({}) { |sym, hash|
-      hash[sym.to_s.camelize] = self.send(sym)
-    }
-  end
-
-
   def create_history_entry_for_mailbox
     return if mailbox.blank?
     create_customer_history_entry(nil, mailbox)
@@ -52,11 +38,7 @@ class Call
 
   def self.find(tcid)
     return unless tcid
-    fields = Marshal.load(Custom.redis_db.get(call_keyname tcid) || Marshal.dump(new.headers))
-    fields['TargetId'] = tcid
-
-    new Call::FORMAT.each_with_object({}) { |sym, hash|
-      hash[sym] = fields[sym.to_s.camelize]
-    }
+    call = Custom.redis_db.get(call_keyname tcid)
+    Marshal.load(call) if call
   end
 end

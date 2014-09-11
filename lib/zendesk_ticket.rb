@@ -11,11 +11,11 @@ class ZendeskTicket
 
   class << self
 
+    # TODO Can we avoid fetching solved/closed tickets at all?
+    #
     def fetch(requester_id)
       if (user = Custom.zendesk.users.find id: requester_id)
         user.requested_tickets.map { |t|
-          # TODO Can we avoid fetching closed tickets at all?
-          #
           build_from(t) unless ['solved', 'closed'].include?(t.status)
         }.compact
       else
@@ -24,13 +24,14 @@ class ZendeskTicket
     end
 
 
-    def create(submitter_id, params)
-      build_from Custom.zendesk.tickets.create(
-        submitter_id: submitter_id,
+    def create(params)
+      ticket = Custom.zendesk.tickets.create(
+        submitter_id: params[:submitter_id],
         requester_id: params[:requester_id],
         description:  params[:description],
         subject:      params[:subject]
       )
+      build_from(ticket) if ticket
     end
 
 
