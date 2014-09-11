@@ -55,6 +55,11 @@ module AmqpManager
     end
 
 
+    def is_rpc_request?(data)
+      data.is_a?(Hash) && data[:req_from]
+    end
+
+
     def start
       establish_connection
 
@@ -62,7 +67,7 @@ module AmqpManager
       custom_queue.subscribe { |delivery_info, metadata, payload|
         data = Marshal.load(payload)
 
-        if data[:req_from]
+        if is_rpc_request?(data)
           handle_request(data)
         else
           CallEvent.handle_update(data)

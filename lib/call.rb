@@ -7,7 +7,6 @@ class Call
 
 
   def create_history_entry_for_mailbox
-    return if mailbox.blank?
     create_customer_history_entry(nil, mailbox)
   end
 
