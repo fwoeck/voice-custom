@@ -1,10 +1,10 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    activemodel (4.1.5)
-      activesupport (= 4.1.5)
+    activemodel (4.1.6)
+      activesupport (= 4.1.6)
       builder (~> 3.1)
-    activesupport (4.1.5)
+    activesupport (4.1.6)
       i18n (~> 0.6, >= 0.6.9)
       json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
@@ -253,7 +253,7 @@ GEM
     rubysl-yaml (2.0.4)
     rubysl-zlib (2.0.1)
     thread_safe (0.3.4)
-    timers (4.0.0)
+    timers (4.0.1)
       hitimes
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
