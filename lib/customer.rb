@@ -55,10 +55,25 @@ class Customer
   end
 
 
+  def self.zendesk_user(uid)
+    Custom.zendesk.users.find(id: uid)
+  end
+
+
+  def self.create_zendesk_user(opts)
+    Custom.zendesk.users.create(opts)
+  end
+
+
+  def self.create_zendesk_ticket(opts)
+    Custom.zendesk.tickets.create(opts)
+  end
+
+
   private
 
   def fetch_zendesk_user
-    if (user = Custom.zendesk.users.find id: zendesk_id)
+    if (user = Customer.zendesk_user zendesk_id)
       self.full_name = user.name
       self.email     = user.email
     end
@@ -66,7 +81,7 @@ class Customer
 
 
   def update_zendesk_record
-    user = Custom.zendesk.users.find(id: zendesk_id)
+    user = Customer.zendesk_user zendesk_id
 
     if zendesk_needs_update?(user)
       user.name  = full_name
@@ -90,7 +105,7 @@ class Customer
       opts[:email] = email unless email.blank?
       opts[:phone] = caller_ids.first
 
-      user = Custom.zendesk.users.create(opts)
+      user = Customer.create_zendesk_user(opts)
       self.zendesk_id = user.id.to_s if user
     end
   end

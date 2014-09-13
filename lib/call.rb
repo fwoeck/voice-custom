@@ -7,13 +7,18 @@ class Call
 
 
   def handle_update
-    create_history_entry_for_mailbox
-    puts ":: #{Time.now.utc} Added mailbox entry for #{call_id}."
+    create_customer_history_entry(nil, mailbox)
+    puts ":: #{Time.now.utc} Add mailbox entry for #{call_id}."
   end
 
 
-  def create_history_entry_for_mailbox
-    create_customer_history_entry(nil, mailbox)
+  def prefetch_zendesk_tickets
+    cust = fetch_or_create_customer(caller_id)
+
+    if (zid = cust.zendesk_id)
+      ZendeskTicket.fetch(zid)
+      puts ":: #{Time.now.utc} Prefetch Zendesk tickets for #{zid}."
+    end
   end
 
 
@@ -21,6 +26,12 @@ class Call
     cust = fetch_or_create_customer(caller_id)
     entr = cust.history_entries
 
+    create_entry(entr, extension, mailbox)
+    puts ":: #{Time.now.utc} Add history entry for #{caller_id}."
+  end
+
+
+  def create_entry(entr, extension, mailbox)
     entr.detect { |e|
       e.call_id == call_id
     } || entr.create(

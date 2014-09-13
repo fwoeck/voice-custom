@@ -18,16 +18,20 @@ require './lib/custom'
 Custom.setup
 
 require './lib/zendesk_ticket'
+require './lib/request_worker'
 require './lib/history_entry'
-require './lib/amqp_request'
 require './lib/amqp_manager'
+require './lib/amqp_request'
 require './lib/customer'
 require './lib/agent'
 require './lib/call'
 
+RequestWorker.setup
 AmqpManager.start
+
 at_exit do
   AmqpManager.shutdown
+  RequestWorker.shutdown
   puts ":: #{Time.now.utc} Custom finished.."
 end
 

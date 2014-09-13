@@ -11,10 +11,24 @@ class ZendeskTicket
 
   class << self
 
+    def fetch(uid, reload=false)
+      clean_ticket_cache(uid) if reload
+
+      Custom.cache.fetch("zendesk_tickets_for_#{uid}") {
+        fetch_tickets(uid)
+      }
+    end
+
+
+    def clean_ticket_cache(uid)
+      Custom.cache.delete("zendesk_tickets_for_#{uid}")
+    end
+
+
     # TODO Can we avoid fetching solved/closed tickets at all?
     #
-    def fetch(requester_id)
-      if (user = Custom.zendesk.users.find id: requester_id)
+    def fetch_tickets(uid)
+      if (user = Customer.zendesk_user uid)
         user.requested_tickets.map { |t|
           build_from(t) unless ['solved', 'closed'].include?(t.status)
         }.compact
@@ -25,7 +39,7 @@ class ZendeskTicket
 
 
     def create(params)
-      ticket = Custom.zendesk.tickets.create(
+      ticket = Customer.create_zendesk_ticket(
         submitter_id: params[:submitter_id],
         requester_id: params[:requester_id],
         description:  params[:description],
