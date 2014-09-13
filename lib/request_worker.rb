@@ -10,7 +10,7 @@ class RequestWorker
     }
 
     AmqpManager.rails_publish(res)
-    puts ":: #{Time.now.utc} Performed #{req.klass}##{req.verb}(#{req.params.join(',')})"
+    puts ":: #{Time.now.utc} Perform #{req.klass}##{req.verb}(#{req.params.join(', ')})"
   end
 
 
