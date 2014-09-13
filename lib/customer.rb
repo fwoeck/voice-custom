@@ -5,7 +5,7 @@ class Customer
   field :email,      type: String,   default: ""
   field :full_name,  type: String,   default: ""
   field :caller_ids, type: Array,    default: -> { [] }
-  field :zendesk_id, type: String,   default: ""
+  field :crmuser_id, type: String,   default: ""
   field :created_at, type: DateTime, default: -> { Time.now.utc }
 
   embeds_many :history_entries
@@ -17,7 +17,7 @@ class Customer
       c.full_name = (par[:full_name] || "").strip
       c.email     = (par[:email] || "").strip.downcase
 
-      c.manage_zendesk_account(par[:zendesk_id])
+      c.manage_crmuser_account(par[:crmuser_id])
       c.save
     }
   end
@@ -31,14 +31,14 @@ class Customer
   end
 
 
-  def manage_zendesk_account(par_zendesk_id)
-    if par_zendesk_id == '...' # FIXME This is ugly.
-      request_zendesk_id
-    elsif zendesk_id.blank? && !par_zendesk_id.blank?
-      self.zendesk_id = par_zendesk_id
-      fetch_zendesk_user
-    elsif !zendesk_id.blank?
-      update_zendesk_record
+  def manage_crmuser_account(par_crmuser_id)
+    if par_crmuser_id == '...' # FIXME This is ugly.
+      request_crmuser_id
+    elsif crmuser_id.blank? && !par_crmuser_id.blank?
+      self.crmuser_id = par_crmuser_id
+      fetch_crmuser
+    elsif !crmuser_id.blank?
+      update_crmuser_record
     end
   end
 
@@ -55,35 +55,35 @@ class Customer
   end
 
 
-  def self.zendesk_user(uid)
+  def self.crmuser(uid)
     Custom.zendesk.users.find(id: uid)
   end
 
 
-  def self.create_zendesk_user(opts)
+  def self.create_crmuser(opts)
     Custom.zendesk.users.create(opts)
   end
 
 
-  def self.create_zendesk_ticket(opts)
+  def self.create_crmuser_ticket(opts)
     Custom.zendesk.tickets.create(opts)
   end
 
 
   private
 
-  def fetch_zendesk_user
-    if (user = Customer.zendesk_user zendesk_id)
+  def fetch_crmuser
+    if (user = Customer.crmuser crmuser_id)
       self.full_name = user.name
       self.email     = user.email
     end
   end
 
 
-  def update_zendesk_record
-    user = Customer.zendesk_user zendesk_id
+  def update_crmuser_record
+    user = Customer.crmuser crmuser_id
 
-    if zendesk_needs_update?(user)
+    if crmuser_needs_update?(user)
       user.name  = full_name
       user.phone = caller_ids.first
       user.email = email
@@ -92,21 +92,21 @@ class Customer
   end
 
 
-  def zendesk_needs_update?(user)
+  def crmuser_needs_update?(user)
     return unless user
     user.name != full_name || user.email != email ||
       user.phone != caller_ids.first
   end
 
 
-  def request_zendesk_id
+  def request_crmuser_id
     unless full_name.blank?
       opts         = {name: full_name}
       opts[:email] = email unless email.blank?
       opts[:phone] = caller_ids.first
 
-      user = Customer.create_zendesk_user(opts)
-      self.zendesk_id = user.id.to_s if user
+      user = Customer.create_crmuser(opts)
+      self.crmuser_id = user.id.to_s if user
     end
   end
 end

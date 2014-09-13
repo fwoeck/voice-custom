@@ -12,12 +12,12 @@ class Call
   end
 
 
-  def prefetch_zendesk_tickets
+  def prefetch_crmuser_tickets
     cust = fetch_or_create_customer(caller_id)
 
-    if (zid = cust.zendesk_id)
-      ZendeskTicket.fetch(zid)
-      puts ":: #{Time.now.utc} Prefetch Zendesk tickets for #{zid}."
+    if (cid = cust.crmuser_id)
+      CrmTicket.fetch(cid)
+      puts ":: #{Time.now.utc} Prefetch Crm tickets for #{cid}."
     end
   end
 
