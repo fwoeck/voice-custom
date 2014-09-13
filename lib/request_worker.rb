@@ -3,7 +3,7 @@ class RequestWorker
 
 
   def perform_rpc_request(req)
-    res = AmqpRequest.new.tap { |r|
+    res = RemoteRequest.new.tap { |r|
       r.id     = req.id
       r.value  = req.klass.constantize.send(req.verb, *req.params)
       r.res_to = req.req_from

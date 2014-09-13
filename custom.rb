@@ -19,9 +19,9 @@ Custom.setup
 
 require './lib/zendesk_ticket'
 require './lib/request_worker'
+require './lib/remote_request'
 require './lib/history_entry'
 require './lib/amqp_manager'
-require './lib/amqp_request'
 require './lib/customer'
 require './lib/agent'
 require './lib/call'
