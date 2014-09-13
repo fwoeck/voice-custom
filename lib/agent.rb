@@ -7,8 +7,8 @@ class Agent
   def handle_update
     if (call = Call.find call_id)
       case activity
-        when :ringing then call.prefetch_zendesk_tickets
-        when :talking then call.create_customer_history_entry(name)
+        when :ringing then call.prefetch_crmuser_tickets
+        when :talking then call.add_customer_history_entry(name)
       end
     end
   end
