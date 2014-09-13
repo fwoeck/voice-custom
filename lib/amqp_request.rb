@@ -4,13 +4,6 @@ class AmqpRequest
 
 
   def handle_update
-    res = AmqpRequest.new.tap { |r|
-      r.id     = id
-      r.value  = klass.constantize.send(verb, *params)
-      r.res_to = req_from
-    }
-
-    AmqpManager.rails_publish(res)
-    puts ":: #{Time.now.utc} Performed request: #{klass}##{verb}(#{params.join(',')})."
+    Celluloid::Actor[:rpc].async.perform_rpc_request(self)
   end
 end
