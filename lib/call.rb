@@ -23,11 +23,11 @@ class Call
   end
 
 
-  def add_customer_history_entry(extension, mailbox=nil)
+  def add_customer_history_entry(user_id, mailbox=nil)
     cust = fetch_or_create_customer(caller_id)
     entr = cust.history_entries
 
-    create_entry(entr, extension, mailbox) unless call_has_entry?(entr)
+    create_entry(entr, user_id, mailbox) unless call_has_entry?(entr)
   end
 
 
@@ -36,10 +36,10 @@ class Call
   end
 
 
-  def create_entry(entr, extension, mailbox)
+  def create_entry(entr, user_id, mailbox)
     entr.create(
-      mailbox:   mailbox,   call_id:   call_id,
-      caller_id: caller_id, extension: extension
+      mailbox:   mailbox,   call_id: call_id,
+      caller_id: caller_id, user_id: user_id
     )
     puts ":: #{Time.now.utc} Add history entry for #{caller_id}."
   end
