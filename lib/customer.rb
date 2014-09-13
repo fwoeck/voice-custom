@@ -55,8 +55,8 @@ class Customer
   end
 
 
-  def self.crmuser(uid)
-    Custom.zendesk.users.find(id: uid)
+  def self.crmuser(user_id)
+    Custom.zendesk.users.find(id: user_id)
   end
 
 

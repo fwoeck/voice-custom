@@ -8,7 +8,7 @@ class Agent
     if (call = Call.find call_id)
       case activity
         when :ringing then call.prefetch_crmuser_tickets
-        when :talking then call.add_customer_history_entry(name)
+        when :talking then call.add_customer_history_entry(id)
       end
     end
   end

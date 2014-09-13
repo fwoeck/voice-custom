@@ -11,24 +11,24 @@ class CrmTicket
 
   class << self
 
-    def fetch(uid, reload=false)
-      clean_ticket_cache(uid) if reload
+    def fetch(user_id, reload=false)
+      clean_ticket_cache(user_id) if reload
 
-      Custom.cache.fetch("crmuser_tickets_for_#{uid}") {
-        fetch_tickets(uid)
+      Custom.cache.fetch("crmuser_tickets_for_#{user_id}") {
+        fetch_tickets(user_id)
       }
     end
 
 
-    def clean_ticket_cache(uid)
-      Custom.cache.delete("crmuser_tickets_for_#{uid}")
+    def clean_ticket_cache(user_id)
+      Custom.cache.delete("crmuser_tickets_for_#{user_id}")
     end
 
 
     # TODO Can we avoid fetching solved/closed tickets at all?
     #
-    def fetch_tickets(uid)
-      if (user = Customer.crmuser uid)
+    def fetch_tickets(user_id)
+      if (user = Customer.crmuser user_id)
         user.requested_tickets.map { |t|
           build_from(t) unless ['solved', 'closed'].include?(t.status)
         }.compact
