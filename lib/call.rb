@@ -14,8 +14,9 @@ class Call
 
   def prefetch_crmuser_tickets
     cust = fetch_or_create_customer(caller_id)
+    cid  = cust.crmuser_id
 
-    if (cid = cust.crmuser_id)
+    unless cid.blank?
       CrmTicket.fetch(cid)
       puts ":: #{Time.now.utc} Prefetch Crm tickets for #{cid}."
     end
