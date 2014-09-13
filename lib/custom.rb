@@ -1,11 +1,16 @@
 module Custom
 
-  cattr_reader :conf, :redis_db, :rails_env, :zendesk
+  cattr_reader :conf, :redis_db, :rails_env, :zendesk, :cache
 
 
   def self.read_config
     @@rails_env = ENV['RAILS_ENV'] || 'development'
     @@conf      = YAML.load(File.read(File.join('./config/app.yml')))
+  end
+
+
+  def self.setup_cache
+    @@cache = ActiveSupport::Cache::MemoryStore.new(expires_in: 5.minutes)
   end
 
 
@@ -36,6 +41,7 @@ module Custom
   def self.setup
     read_config
     setup_redis
+    setup_cache
     setup_mongodb
     setup_zendesk
   end

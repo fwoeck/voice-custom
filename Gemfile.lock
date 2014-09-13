@@ -269,6 +269,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activesupport
   bunny
   celluloid
   git-smart
