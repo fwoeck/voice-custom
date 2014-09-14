@@ -5,7 +5,7 @@ class CrmTicket
 
 
   def get_url
-    "https://#{Custom.conf['zendesk_domain']}.zendesk.com/agent/#/tickets/#{id}"
+    Custom.conf['crm_ticket_url'].sub('TID', id.to_s)
   end
 
 
