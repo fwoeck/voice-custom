@@ -56,17 +56,17 @@ class Customer
 
 
   def self.crmuser(user_id)
-    Custom.zendesk.users.find(id: user_id)
+    Custom.crmclient.users.find(id: user_id)
   end
 
 
   def self.create_crmuser(opts)
-    Custom.zendesk.users.create(opts)
+    Custom.crmclient.users.create(opts)
   end
 
 
   def self.create_crmuser_ticket(opts)
-    Custom.zendesk.tickets.create(opts)
+    Custom.crmclient.tickets.create(opts)
   end
 
 

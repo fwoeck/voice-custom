@@ -1,6 +1,6 @@
 module Custom
 
-  cattr_reader :conf, :redis_db, :rails_env, :zendesk, :cache
+  cattr_reader :conf, :redis_db, :rails_env, :crmclient, :cache
 
 
   def self.read_config
@@ -26,8 +26,8 @@ module Custom
   end
 
 
-  def self.setup_zendesk
-    @@zendesk = ZendeskAPI::Client.new do |config|
+  def self.setup_crmclient
+    @@crmclient = ZendeskAPI::Client.new do |config|
       config.url      = Custom.conf['crm_api_url']
       config.username = Custom.conf['crm_user']
       config.password = Custom.conf['crm_pass']
@@ -43,6 +43,6 @@ module Custom
     setup_redis
     setup_cache
     setup_mongodb
-    setup_zendesk
+    setup_crmclient
   end
 end
