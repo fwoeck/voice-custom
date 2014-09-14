@@ -38,7 +38,7 @@ class Customer
       self.crmuser_id = par_crmuser_id
       fetch_crmuser
     elsif !crmuser_id.blank?
-      update_crmuser_record
+      Thread.new { update_crmuser_record }
     end
   end
 
