@@ -28,9 +28,9 @@ module Custom
 
   def self.setup_zendesk
     @@zendesk = ZendeskAPI::Client.new do |config|
-      config.url      = "https://#{Custom.conf['zendesk_domain']}.zendesk.com/api/v2"
-      config.username =  Custom.conf['zendesk_user']
-      config.password =  Custom.conf['zendesk_pass']
+      config.url      = Custom.conf['crm_api_url']
+      config.username = Custom.conf['crm_user']
+      config.password = Custom.conf['crm_pass']
 
       config.logger = Logger.new(STDOUT)
       config.logger.level = Logger::WARN
