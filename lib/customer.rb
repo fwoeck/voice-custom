@@ -25,6 +25,7 @@ class Customer
 
   def update_history_with(par)
     if (entry = history_entries.find par[:entry_id])
+      entry.tags    =  par[:tags]
       entry.remarks = (par[:remarks] || "").strip
       entry.save
     end
@@ -38,7 +39,7 @@ class Customer
       self.crmuser_id = par_crmuser_id
       fetch_crmuser
     elsif !crmuser_id.blank?
-      update_crmuser_record
+      Thread.new { update_crmuser_record }
     end
   end
 
