@@ -25,6 +25,7 @@ class Customer
 
   def update_history_with(par)
     if (entry = history_entries.find par[:entry_id])
+      entry.tags    =  par[:tags]
       entry.remarks = (par[:remarks] || "").strip
       entry.save
     end
