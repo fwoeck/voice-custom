@@ -23,12 +23,12 @@ class Call
   end
 
 
-  def formattedSkill
+  def formatSkill
     skill ? skill.gsub('_', '-') : nil
   end
 
 
-  def formattedLang
+  def formatLang
     language ? language.upcase : nil
   end
 
@@ -37,7 +37,7 @@ class Call
     cust = fetch_or_create_customer(caller_id)
     entr = cust.history_entries
 
-    tags = [formattedSkill, formattedLang].compact
+    tags = [formatLang, formatSkill].compact
     tags << 'mailbox' if mailbox
 
     unless call_has_entry?(entr)
