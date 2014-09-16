@@ -23,11 +23,26 @@ class Call
   end
 
 
+  def formatSkill
+    skill ? skill.gsub('_', '-') : nil
+  end
+
+
+  def formatLang
+    language ? language.upcase : nil
+  end
+
+
   def add_customer_history_entry(user_id, mailbox=nil)
     cust = fetch_or_create_customer(caller_id)
     entr = cust.history_entries
 
-    create_entry(entr, user_id, mailbox) unless call_has_entry?(entr)
+    tags = [formatLang, formatSkill].compact
+    tags << 'mailbox' if mailbox
+
+    unless call_has_entry?(entr)
+      create_entry(entr, user_id, mailbox, tags)
+    end
   end
 
 
@@ -36,10 +51,11 @@ class Call
   end
 
 
-  def create_entry(entr, user_id, mailbox)
+  def create_entry(entr, user_id, mailbox, tags)
     entr.create(
       mailbox:   mailbox,   call_id: call_id,
-      caller_id: caller_id, user_id: user_id
+      caller_id: caller_id, user_id: user_id,
+      tags:      tags
     )
     puts ":: #{Time.now.utc} Add history entry for #{caller_id}."
   end
