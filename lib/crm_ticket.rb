@@ -25,12 +25,10 @@ class CrmTicket
     end
 
 
-    # TODO Can we avoid fetching solved/closed tickets at all?
-    #
     def fetch_tickets(user_id)
       if (user = Customer.crmuser user_id)
         user.requested_tickets.map { |t|
-          build_from(t) unless ['solved', 'closed'].include?(t.status)
+          build_from(t) unless t.status == 'closed'
         }.compact
       else
         []
