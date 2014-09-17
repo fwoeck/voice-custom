@@ -1,6 +1,16 @@
 class Customer
 
   include Mongoid::Document
+  include Mongoid::Elasticsearch
+
+
+  elasticsearch! index_mappings: {
+    'email'      => {type: 'string', analyzer: 'snowball'},
+    'full_name'  => {type: 'string', analyzer: 'snowball'},
+    'caller_ids' => {type: 'string', analyzer: 'snowball'},
+    'crmuser_id' => {type: 'string'}
+  }
+
 
   field :email,      type: String,   default: ""
   field :full_name,  type: String,   default: ""
