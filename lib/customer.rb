@@ -1,6 +1,17 @@
 class Customer
 
   include Mongoid::Document
+  include Mongoid::Elasticsearch
+  extend  CustomerSearch
+
+
+  elasticsearch! index_mappings: {
+    'email'      => {type: 'string', analyzer: 'snowball'},
+    'full_name'  => {type: 'string', analyzer: 'snowball'},
+    'caller_ids' => {type: 'string', analyzer: 'snowball'},
+    'crmuser_id' => {type: 'string'}
+  }
+
 
   field :email,      type: String,   default: ""
   field :full_name,  type: String,   default: ""
@@ -44,30 +55,33 @@ class Customer
   end
 
 
-  def self.update_with(par)
-    cust = Customer.find(par[:id])
-    cust.update_with(par) if cust
-  end
+  class << self
+
+    def update_with(par)
+      cust = Customer.find(par[:id])
+      cust.update_with(par) if cust
+    end
 
 
-  def self.update_history_with(par)
-    cust = Customer.find(par[:customer_id])
-    cust.update_history_with(par) if cust
-  end
+    def update_history_with(par)
+      cust = Customer.find(par[:customer_id])
+      cust.update_history_with(par) if cust
+    end
 
 
-  def self.crmuser(user_id)
-    Custom.crmclient.users.find(id: user_id)
-  end
+    def crmuser(user_id)
+      Custom.crmclient.users.find(id: user_id)
+    end
 
 
-  def self.create_crmuser(opts)
-    Custom.crmclient.users.create(opts)
-  end
+    def create_crmuser(opts)
+      Custom.crmclient.users.create(opts)
+    end
 
 
-  def self.create_crmuser_ticket(opts)
-    Custom.crmclient.tickets.create(opts)
+    def create_crmuser_ticket(opts)
+      Custom.crmclient.tickets.create(opts)
+    end
   end
 
 
