@@ -5,13 +5,14 @@ class HistoryEntry
 
 
   elasticsearch! index_mappings: {
-    'called_at'   => {type: 'time'},
+    'tags'        => {type: 'string', analyzer: 'snowball'},
+    'remarks'     => {type: 'string', analyzer: 'snowball'},
+    'mailbox'     => {type: 'string'},
     'call_id'     => {type: 'string'},
+    'user_id'     => {type: 'integer'},
     'caller_id'   => {type: 'string'},
     'customer_id' => {type: 'string'},
-    'user_id'     => {type: 'integer'},
-    'tags'        => {type: 'string', analyzer: 'snowball'},
-    'remarks'     => {type: 'string', analyzer: 'snowball'}
+    'created_at'  => {type: 'time'}
   }
 
 
