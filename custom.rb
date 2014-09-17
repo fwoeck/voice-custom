@@ -18,6 +18,7 @@ require './lib/custom'
 Custom.setup
 
 require './lib/request_worker'
+require './lib/customer_search'
 require './lib/remote_request'
 require './lib/history_entry'
 require './lib/amqp_manager'
