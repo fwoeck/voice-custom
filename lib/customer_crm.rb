@@ -1,7 +1,10 @@
 module CustomerCrm
 
   def manage_crmuser_account(par_crmuser_id)
-    if par_crmuser_id == '...' # FIXME This is ugly.
+    # FIXME We use the ... as indication to request a new
+    #       userId, that's ugly:
+    #
+    if par_crmuser_id == '...'
       request_crmuser_id
     elsif crmuser_id.blank? && !par_crmuser_id.blank?
       self.crmuser_id = par_crmuser_id

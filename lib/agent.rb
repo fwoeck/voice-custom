@@ -4,7 +4,7 @@ class Agent
                 :locked, :availability, :idle_since, :mutex, :unlock_scheduled
 
 
-  def handle_update
+  def handle_message
     if (call = Call.find call_id)
       case activity
         when :ringing then call.prefetch_crmuser_tickets

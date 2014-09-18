@@ -51,8 +51,8 @@ module AmqpManager
 
       custom_queue.bind(custom_xchange, routing_key: 'voice.custom')
       custom_queue.subscribe { |delivery_info, metadata, payload|
-        Marshal.load(payload).handle_update
-      }
+        Marshal.load(payload).handle_message
+      } if ENV['SUBSCRIBE_AMQP']
     end
   end
 end

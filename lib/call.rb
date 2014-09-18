@@ -6,15 +6,15 @@ class Call
   attr_accessor *FORMAT
 
 
-  def handle_update
+  def handle_message
     add_customer_history_entry(nil, mailbox)
     puts ":: #{Time.now.utc} Add mailbox entry for #{call_id}."
   end
 
 
   def prefetch_crmuser_tickets
-    cust = fetch_or_create_customer(caller_id)
-    cid  = cust.crmuser_id
+    return unless (cust = fetch_or_create_customer caller_id)
+    cid = cust.crmuser_id
 
     unless cid.blank?
       CrmTicket.fetch(cid)
@@ -34,7 +34,7 @@ class Call
 
 
   def add_customer_history_entry(user_id, mailbox=nil)
-    cust = fetch_or_create_customer(caller_id)
+    return unless (cust = fetch_or_create_customer caller_id)
     entr = cust.history_entries
 
     tags = [formatLang, formatSkill].compact
@@ -61,7 +61,14 @@ class Call
   end
 
 
+  def caller_is_valid?(cid)
+    !cid.blank? && (cid == Custom.conf['admin_name'] || cid.length > 4)
+  end
+
+
   def fetch_or_create_customer(caller_id)
+    return unless caller_is_valid?(caller_id)
+
     Customer.where(caller_ids: caller_id).last ||
       Customer.create(caller_ids: [caller_id])
   end
