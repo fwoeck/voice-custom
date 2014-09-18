@@ -11,8 +11,8 @@ class HistoryEntry
     'call_id'     => {type: 'string'},
     'user_id'     => {type: 'integer'},
     'caller_id'   => {type: 'string'},
-    'customer_id' => {type: 'string'},
-    'created_at'  => {type: 'time'}
+    'created_at'  => {type: 'time'},
+    'customer_id' => {type: 'string'}
   }
 
 
@@ -22,8 +22,8 @@ class HistoryEntry
   field :call_id,     type: String
   field :user_id,     type: Integer
   field :caller_id,   type: String
-  field :customer_id, type: String
   field :created_at,  type: DateTime, default: -> { Time.now.utc }
+  field :customer_id, type: String
 
   embedded_in :customer
   before_save :set_customer_id

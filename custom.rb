@@ -13,19 +13,22 @@ require 'json'
 require 'base64'
 require 'logger'
 
+
 Thread.abort_on_exception = false
 require './lib/custom'
 Custom.setup
 
-require './lib/request_worker'
 require './lib/customer_search'
+require './lib/request_worker'
 require './lib/remote_request'
 require './lib/history_entry'
+require './lib/customer_crm'
 require './lib/amqp_manager'
 require './lib/crm_ticket'
 require './lib/customer'
 require './lib/agent'
 require './lib/call'
+
 
 RequestWorker.setup
 AmqpManager.start
@@ -36,5 +39,11 @@ at_exit do
   puts ":: #{Time.now.utc} Custom finished.."
 end
 
+
 puts ":: #{Time.now.utc} Custom started.."
-sleep
+if ENV['SUBSCRIBE_AMQP']
+  sleep
+else
+  require 'hirb'
+  Hirb.enable
+end
