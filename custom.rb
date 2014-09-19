@@ -17,6 +17,7 @@ require 'logger'
 Thread.abort_on_exception = false
 require './lib/custom'
 Custom.setup
+Custom.wait_for_elasticsearch
 
 require './lib/customer_search'
 require './lib/request_worker'
