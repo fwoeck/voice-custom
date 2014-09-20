@@ -45,4 +45,9 @@ module Custom
     setup_mongodb
     setup_crmclient
   end
+
+
+  def self.wait_for_elasticsearch
+    sleep 1 while `lsof -i :9200 | grep LISTEN | wc -l`.to_i < 1
+  end
 end
