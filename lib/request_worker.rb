@@ -6,10 +6,10 @@ class RequestWorker
     cmd = "#{req.klass}##{req.verb}(#{req.params.join(', ')})"
 
     AmqpManager.rails_publish(execute_command req)
-    puts ":: #{Time.now.utc} Perform #{cmd}"
+    puts "#{Time.now.utc} :: Perform #{cmd}"
   rescue => e
     AmqpManager.rails_publish(error_for req, e)
-    puts ":: #{Time.now.utc} An error happened for #{cmd}: #{e.message}"
+    puts "#{Time.now.utc} :: An error happened for #{cmd}: #{e.message}"
   end
 
 
