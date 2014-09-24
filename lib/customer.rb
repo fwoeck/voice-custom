@@ -2,8 +2,6 @@ class Customer
 
   include Mongoid::Document
   include Mongoid::Elasticsearch
-
-  extend  CustomerSearch
   include CustomerCrm
 
 
@@ -46,6 +44,11 @@ class Customer
 
 
   class << self
+
+    def search(opts)
+      CustomerSearch.search(opts)
+    end
+
 
     def update_with(par)
       cust = Customer.find(par[:id])
