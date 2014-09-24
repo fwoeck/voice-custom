@@ -37,11 +37,11 @@ AmqpManager.start
 at_exit do
   AmqpManager.shutdown
   RequestWorker.shutdown
-  puts ":: #{Time.now.utc} Custom finished.."
+  puts "#{Time.now.utc} :: Custom finished.."
 end
 
 
-puts ":: #{Time.now.utc} Custom started.."
+puts "#{Time.now.utc} :: Custom started.."
 if ENV['SUBSCRIBE_AMQP']
   sleep
 else

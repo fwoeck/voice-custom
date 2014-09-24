@@ -8,7 +8,7 @@ class Call
 
   def handle_message
     add_customer_history_entry(nil, mailbox)
-    puts ":: #{Time.now.utc} Add mailbox entry for #{call_id}."
+    puts "#{Time.now.utc} :: Add mailbox entry for #{call_id}."
   end
 
 
@@ -18,7 +18,7 @@ class Call
 
     unless cid.blank?
       CrmTicket.fetch(cid)
-      puts ":: #{Time.now.utc} Prefetch Crm tickets for #{cid}."
+      puts "#{Time.now.utc} :: Prefetch Crm tickets for #{cid}."
     end
   end
 
@@ -57,7 +57,7 @@ class Call
       caller_id: caller_id, user_id: user_id,
       tags:      tags
     )
-    puts ":: #{Time.now.utc} Add history entry for #{caller_id}."
+    puts "#{Time.now.utc} :: Add history entry for #{caller_id}."
   end
 
 
