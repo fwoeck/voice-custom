@@ -40,7 +40,7 @@ GEM
     inflection (1.0.0)
     json (1.8.1)
     mime-types (1.25.1)
-    minitest (5.4.1)
+    minitest (5.4.2)
     mongoid (4.0.0)
       activemodel (~> 4.0)
       moped (~> 2.0.0)
