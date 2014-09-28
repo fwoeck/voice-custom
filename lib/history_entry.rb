@@ -11,7 +11,7 @@ class HistoryEntry
     'call_id'     => {type: 'string'},
     'user_id'     => {type: 'integer'},
     'caller_id'   => {type: 'string'},
-    'created_at'  => {type: 'time'},
+    'created_at'  => {type: 'date_time_no_millis'},
     'customer_id' => {type: 'string'}
   }
 
@@ -31,10 +31,5 @@ class HistoryEntry
 
   def set_customer_id
     self.customer_id = customer.try(:id).to_s
-  end
-
-
-  def parent
-    customer || Customer.find(customer_id)
   end
 end
