@@ -23,6 +23,7 @@ module Custom
 
   def self.setup_mongodb
     Mongoid.load!('./config/mongoid.yml', rails_env.to_sym)
+    Mongoid.raise_not_found_error = false
   end
 
 
