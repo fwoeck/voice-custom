@@ -7,12 +7,12 @@ class HistoryEntry
   elasticsearch! index_mappings: {
     'tags'        => {type: 'string', analyzer: 'snowball'},
     'remarks'     => {type: 'string', analyzer: 'snowball'},
-    'mailbox'     => {type: 'string'},
-    'call_id'     => {type: 'string'},
+    'mailbox'     => {type: 'string', index:    :not_analyzed},
+    'call_id'     => {type: 'string', index:    :not_analyzed},
     'user_id'     => {type: 'integer'},
-    'caller_id'   => {type: 'string'},
-    'created_at'  => {type: 'string'},
-    'customer_id' => {type: 'string'}
+    'caller_id'   => {type: 'string', index:    :not_analyzed},
+    'created_at'  => {type: 'date',   index:    :not_analyzed},
+    'customer_id' => {type: 'string', index:    :not_analyzed}
   }
 
 
@@ -31,5 +31,10 @@ class HistoryEntry
 
   def set_customer_id
     self.customer_id = customer.try(:id).to_s
+  end
+
+
+  def as_indexed_json
+    serializable_hash.reject { |k, v| %w(_id).include?(k) }
   end
 end
