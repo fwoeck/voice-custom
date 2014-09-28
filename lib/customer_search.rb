@@ -28,6 +28,8 @@ class CustomerSearch
   def find_customer_ids
     return [] unless c_query
     Customer.es.search(c_opts).results.map(&:id)
+  rescue Elasticsearch::Transport::Transport::Errors::BadRequest
+    []
   end
 
 
@@ -35,6 +37,8 @@ class CustomerSearch
     return {} unless h_query
     HistoryEntry.es.search(h_opts).results
                 .group_by { |he| he.customer_id }
+  rescue Elasticsearch::Transport::Transport::Errors::BadRequest
+    {}
   end
 
 
