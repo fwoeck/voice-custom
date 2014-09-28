@@ -12,7 +12,7 @@ class CustomerSearch
     size = sanitized_size(opts)
 
     @c_opts  = build_query_for(opts, :c, size)
-    @h_opts  = build_query_for(opts, :h, size, 'now-1w')
+    @h_opts  = build_query_for(opts, :h, size, 'now-4w')
 
     @c_query = !opts[:c].blank?
     @h_query = !opts[:h].blank?
@@ -33,17 +33,28 @@ class CustomerSearch
             query: opts.fetch(key, '')
           }
         },
-        size: size
+        filter: {bool: {must: []}},
+        size:   size
       }
     }.tap { |q|
-      q[:body][:filter] = {
+      q[:body][:filter][:bool][:must] << {
         range: {
           created_at: {
-            from: from,
-            to:  'now'
+            from: from, to: 'now'
           }
         }
       } if from
+    }
+  end
+
+
+  def scoped_history_query
+    h_opts.tap { |q|
+      q[:body][:filter][:bool][:must] << {
+        terms: {
+          customer_id: customer_ids.map(&:to_s)
+        }
+      } if c_query
     }
   end
 
@@ -58,16 +69,18 @@ class CustomerSearch
   def find_customer_ids
     return [] unless c_query
     Customer.es.search(c_opts).results.map(&:id)
-  rescue Elasticsearch::Transport::Transport::Errors::BadRequest
+  rescue Elasticsearch::Transport::Transport::Errors::BadRequest => e
     []
   end
 
 
   def find_history_entries
     return {} unless h_query
-    HistoryEntry.es.search(h_opts).results
+    opts = scoped_history_query
+
+    HistoryEntry.es.search(opts).results
                 .group_by { |he| he.customer_id }
-  rescue Elasticsearch::Transport::Transport::Errors::BadRequest
+  rescue Elasticsearch::Transport::Transport::Errors::BadRequest => e
     {}
   end
 
