@@ -10,17 +10,24 @@ class CustomerSearch
 
   def initialize(opts)
     size = sanitized_size(opts)
+    time = sanitized_timespan(opts)
 
     @c_opts  = build_query_for(opts, :c, size)
-    @h_opts  = build_query_for(opts, :h, size, 'now-4w')
+    @h_opts  = build_query_for(opts, :h, size, time)
 
     @c_query = !opts[:c].blank?
     @h_query = !opts[:h].blank?
   end
 
 
+  def sanitized_timespan(opts)
+    delta = opts.fetch(:t, '4w')
+    delta[/\A[0-9]+[mhdwM]\z/] ? "now-#{delta}" : 'now-4w'
+  end
+
+
   def sanitized_size(opts)
-    size = opts.fetch(:size, 100)
+    size = opts.fetch(:s, 100)
     size > 100 ? 100 : size
   end
 
