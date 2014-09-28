@@ -11,7 +11,7 @@ class HistoryEntry
     'call_id'     => {type: 'string'},
     'user_id'     => {type: 'integer'},
     'caller_id'   => {type: 'string'},
-    'created_at'  => {type: 'date_time_no_millis'},
+    'created_at'  => {type: 'string'},
     'customer_id' => {type: 'string'}
   }
 
