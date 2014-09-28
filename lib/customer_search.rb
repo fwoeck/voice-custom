@@ -9,12 +9,42 @@ class CustomerSearch
 
 
   def initialize(opts)
-    size    = opts.fetch(:size, 100)
-    @c_opts = {q: opts.fetch(:c, ""), size: size}
-    @h_opts = {q: opts.fetch(:h, ""), size: size}
+    size = sanitized_size(opts)
 
-    @c_query = c_opts[:q].size > 0
-    @h_query = h_opts[:q].size > 0
+    @c_opts  = build_query_for(opts, :c, size)
+    @h_opts  = build_query_for(opts, :h, size, 'now-1w')
+
+    @c_query = !opts[:c].blank?
+    @h_query = !opts[:h].blank?
+  end
+
+
+  def sanitized_size(opts)
+    size = opts.fetch(:size, 100)
+    size > 100 ? 100 : size
+  end
+
+
+  def build_query_for(opts, key, size, from=nil)
+    {
+      body: {
+        query: {
+          query_string: {
+            query: opts.fetch(key, '')
+          }
+        },
+        size: size
+      }
+    }.tap { |q|
+      q[:body][:filter] = {
+        range: {
+          created_at: {
+            from: from,
+            to:  'now'
+          }
+        }
+      } if from
+    }
   end
 
 
