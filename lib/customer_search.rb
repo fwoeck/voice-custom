@@ -9,12 +9,60 @@ class CustomerSearch
 
 
   def initialize(opts)
-    size    = opts.fetch(:size, 100)
-    @c_opts = {q: opts.fetch(:c, ""), size: size}
-    @h_opts = {q: opts.fetch(:h, ""), size: size}
+    size = sanitized_size(opts)
+    time = sanitized_timespan(opts)
 
-    @c_query = c_opts[:q].size > 0
-    @h_query = h_opts[:q].size > 0
+    @c_opts  = build_query_for(opts, :c, size)
+    @h_opts  = build_query_for(opts, :h, size, time)
+
+    @c_query = !opts[:c].blank?
+    @h_query = !opts[:h].blank?
+  end
+
+
+  def sanitized_timespan(opts)
+    delta = opts.fetch(:t, '4w')
+    delta[/\A[0-9]+[mhdwM]\z/] ? "now-#{delta}" : 'now-4w'
+  end
+
+
+  def sanitized_size(opts)
+    size = opts.fetch(:s, 100)
+    size > 100 ? 100 : size
+  end
+
+
+  def build_query_for(opts, key, size, from=nil)
+    {
+      body: {
+        query: {
+          query_string: {
+            query: opts.fetch(key, '')
+          }
+        },
+        filter: {bool: {must: []}},
+        size:   size
+      }
+    }.tap { |q|
+      q[:body][:filter][:bool][:must] << {
+        range: {
+          created_at: {
+            from: from, to: 'now'
+          }
+        }
+      } if from
+    }
+  end
+
+
+  def scoped_history_query
+    h_opts.tap { |q|
+      q[:body][:filter][:bool][:must] << {
+        terms: {
+          customer_id: customer_ids.map(&:to_s)
+        }
+      } if c_query
+    }
   end
 
 
@@ -28,16 +76,18 @@ class CustomerSearch
   def find_customer_ids
     return [] unless c_query
     Customer.es.search(c_opts).results.map(&:id)
-  rescue Elasticsearch::Transport::Transport::Errors::BadRequest
+  rescue Elasticsearch::Transport::Transport::Errors::BadRequest => e
     []
   end
 
 
   def find_history_entries
     return {} unless h_query
-    HistoryEntry.es.search(h_opts).results
+    opts = scoped_history_query
+
+    HistoryEntry.es.search(opts).results
                 .group_by { |he| he.customer_id }
-  rescue Elasticsearch::Transport::Transport::Errors::BadRequest
+  rescue Elasticsearch::Transport::Transport::Errors::BadRequest => e
     {}
   end
 
