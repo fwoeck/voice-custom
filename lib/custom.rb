@@ -1,6 +1,6 @@
 module Custom
 
-  cattr_reader :conf, :redis_db, :rails_env, :crmclient, :cache
+  cattr_reader :conf, :redis, :rails_env, :crmclient, :cache
 
 
   def self.read_config
@@ -15,7 +15,7 @@ module Custom
 
 
   def self.setup_redis
-    @@redis_db = ConnectionPool::Wrapper.new(size: 5, timeout: 3) {
+    @@redis = ConnectionPool.new(size: 5, timeout: 3) {
       Redis.new(host: conf['redis_host'], port: conf['redis_port'], db: conf['redis_db'])
     }
   end

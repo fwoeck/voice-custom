@@ -81,7 +81,7 @@ class Call
 
   def self.find(tcid)
     return unless tcid
-    call = Custom.redis_db.get(call_keyname tcid)
+    call = Custom.redis.with { |con| con.get(call_keyname tcid) }
     Marshal.load(call) if call
   end
 end
