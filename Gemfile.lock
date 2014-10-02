@@ -265,6 +265,8 @@ GEM
     rubysl-xmlrpc (2.0.0)
     rubysl-yaml (2.0.4)
     rubysl-zlib (2.0.1)
+    rufus-scheduler (3.0.9)
+      tzinfo
     thread_safe (0.3.4)
     timers (4.0.1)
       hitimes
@@ -291,4 +293,5 @@ DEPENDENCIES
   redis
   rubygems-bundler
   rubysl
+  rufus-scheduler
   zendesk_api

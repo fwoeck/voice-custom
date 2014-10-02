@@ -60,5 +60,22 @@ class Customer
       cust = Customer.find(par[:customer_id])
       cust.update_history_with(par) if cust
     end
+
+
+    def gracetime(caller_id)
+      caller_id == Custom.conf['admin_name'] ? 1 : Custom.conf['gracetime']
+    end
+
+
+    def wipe_old_history_entries
+      # TODO We should scope this to customers with old entries.
+      #      This requires an index on history_entries.created_at:
+      #
+      Customer.where(history_entries: {'$ne' => []}).each { |cust|
+        cust.history_entries.select { |entry|
+          entry.created_at < gracetime(entry.caller_id).days.ago
+        }.map(&:destroy)
+      }
+    end
   end
 end

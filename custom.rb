@@ -26,6 +26,7 @@ require './lib/history_entry'
 require './lib/customer_crm'
 require './lib/amqp_manager'
 require './lib/crm_ticket'
+require './lib/scheduler'
 require './lib/customer'
 require './lib/agent'
 require './lib/call'
@@ -33,6 +34,7 @@ require './lib/call'
 
 RequestWorker.setup
 AmqpManager.start
+Scheduler.start
 
 at_exit do
   AmqpManager.shutdown

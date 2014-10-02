@@ -6,6 +6,7 @@ gem 'mongoid'
 gem 'celluloid'
 gem 'zendesk_api'
 gem 'activesupport'
+gem 'rufus-scheduler'
 gem 'mongoid-elasticsearch'
 
 gem 'git-smart',        require: nil
