@@ -37,12 +37,22 @@ class Call
     return unless (cust = fetch_or_create_customer caller_id)
     entr = cust.history_entries
 
-    tags = [formatLang, formatSkill].compact
-    tags << 'mailbox' if mailbox
-
     unless call_has_entry?(entr)
-      create_entry(entr, user_id, mailbox, tags)
+      create_entry(entr, user_id, mailbox, get_call_tags)
     end
+  end
+
+
+  def get_call_tags
+    tags = [formatLang, formatSkill].compact
+    tags << 'mailbox'  if mailbox
+    tags << 'outbound' if call_is_outbound?
+    tags
+  end
+
+
+  def call_is_outbound?
+    language.blank?
   end
 
 
