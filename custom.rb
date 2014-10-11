@@ -31,7 +31,7 @@ require './lib/customer'
 require './lib/agent'
 require './lib/call'
 
-
+CustomerSearch.setup
 RequestWorker.setup
 AmqpManager.start
 Scheduler.start
