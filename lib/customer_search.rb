@@ -8,6 +8,12 @@ class CustomerSearch
   end
 
 
+  def self.setup
+    Customer.es.index.create
+    HistoryEntry.es.index.create
+  end
+
+
   def initialize(opts)
     size = sanitized_size(opts)
     time = sanitized_timespan(opts)
@@ -76,7 +82,8 @@ class CustomerSearch
   def find_customer_ids
     return [] unless c_query
     Customer.es.search(c_opts).results.map(&:id)
-  rescue Elasticsearch::Transport::Transport::Errors::BadRequest => e
+  rescue => e
+    puts "#{Time.now.utc} :: An error happened: #{e.message}"
     []
   end
 
@@ -87,7 +94,8 @@ class CustomerSearch
 
     HistoryEntry.es.search(opts).results
                 .group_by { |he| he.customer_id }
-  rescue Elasticsearch::Transport::Transport::Errors::BadRequest => e
+  rescue => e
+    puts "#{Time.now.utc} :: An error happened: #{e.message}"
     {}
   end
 
