@@ -23,16 +23,19 @@ module CustomerCrm
   module ClassMethods
 
     def crmuser(user_id)
+      return unless Custom.crmclient
       Custom.crmclient.users.find(id: user_id)
     end
 
 
     def create_crmuser(opts)
+      return unless Custom.crmclient
       Custom.crmclient.users.create(opts)
     end
 
 
     def create_crmuser_ticket(opts)
+      return unless Custom.crmclient
       Custom.crmclient.tickets.create(opts)
     end
   end

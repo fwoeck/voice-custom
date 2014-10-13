@@ -28,6 +28,8 @@ module Custom
 
 
   def self.setup_crmclient
+    return unless Custom.conf['crm_active']
+
     @@crmclient = ZendeskAPI::Client.new do |config|
       config.url      = Custom.conf['crm_api_url']
       config.username = Custom.conf['crm_user']
