@@ -44,6 +44,13 @@ class Customer
   end
 
 
+  def wipe_old_entries
+    history_entries.select { |entry|
+      entry.created_at < gracetime(entry.caller_id).days.ago
+    }.map(&:destroy)
+  end
+
+
   private
 
   def fetch_entry_for(par)
@@ -52,6 +59,11 @@ class Customer
     else
       history_entries.build
     end
+  end
+
+
+  def gracetime(caller_id)
+    caller_id == Custom.conf['admin_name'] ? 1 : Custom.conf['gracetime']
   end
 
 
@@ -74,19 +86,12 @@ class Customer
     end
 
 
-    def gracetime(caller_id)
-      caller_id == Custom.conf['admin_name'] ? 1 : Custom.conf['gracetime']
-    end
-
-
     def wipe_old_history_entries
       # TODO We should scope this to customers with old entries.
       #      This requires an index on history_entries.created_at:
       #
       Customer.where(history_entries: {'$ne' => []}).each { |cust|
-        cust.history_entries.select { |entry|
-          entry.created_at < gracetime(entry.caller_id).days.ago
-        }.map(&:destroy)
+        cust.wipe_old_entries
       }
     end
   end
