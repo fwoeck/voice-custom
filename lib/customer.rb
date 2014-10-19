@@ -35,10 +35,22 @@ class Customer
 
 
   def update_history_with(par)
-    if (entry = history_entries.find par[:entry_id])
-      entry.tags    =  par[:tags]
-      entry.remarks = (par[:remarks] || "").strip
-      entry.save
+    fetch_entry_for(par).tap { |e|
+      e.tags    =  par[:tags]
+      e.remarks = (par[:remarks] || "").strip
+      e.user_id =  par[:user_id] if par[:user_id]
+      e.save
+    }
+  end
+
+
+  private
+
+  def fetch_entry_for(par)
+    if (id = par[:entry_id])
+      history_entries.find(id)
+    else
+      history_entries.build
     end
   end
 

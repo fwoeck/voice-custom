@@ -50,7 +50,7 @@ GEM
       elasticsearch (~> 1.0.1)
       mongoid (>= 3.0, < 4.1)
       ruby-progressbar
-    moped (2.0.0)
+    moped (2.0.1)
       bson (~> 2.2)
       connection_pool (~> 2.0)
       optionable (~> 0.2.0)
@@ -272,7 +272,7 @@ GEM
       hitimes
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    zendesk_api (1.4.3)
+    zendesk_api (1.4.5)
       faraday (~> 0.9)
       hashie (>= 1.2, < 4.0)
       inflection
