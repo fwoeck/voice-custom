@@ -28,8 +28,8 @@ class Customer
       c.full_name = (par[:full_name] || "").strip
       c.email     = (par[:email] || "").strip.downcase
 
-      c.manage_crmuser_account(par[:crmuser_id])
-      c.save
+      manage_crmuser_account(par[:crmuser_id])
+      save
     }
   end
 
@@ -55,10 +55,15 @@ class Customer
 
   def fetch_entry_for(par)
     if (id = par[:entry_id])
-      history_entries.find(id)
+      find_by_id_or_newest_entry(id)
     else
       history_entries.build
     end
+  end
+
+
+  def find_by_id_or_newest_entry(id)
+    history_entries.find(id) || history_entries.asc(:created_at).last
   end
 
 
