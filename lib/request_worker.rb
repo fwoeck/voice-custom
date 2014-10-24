@@ -38,7 +38,7 @@ class RequestWorker
     #      mask potential problems. Try to remove after a while:
     #
     Celluloid.logger = nil
-    Celluloid::Actor[:rpc] = RequestWorker.pool
+    Celluloid::Actor[:rpc] = RequestWorker.pool(size: 32)
   end
 
 
