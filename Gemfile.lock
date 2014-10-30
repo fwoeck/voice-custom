@@ -69,7 +69,7 @@ GEM
       hitimes
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    zendesk_api (1.4.5)
+    zendesk_api (1.4.6)
       faraday (~> 0.9)
       hashie (>= 1.2, < 4.0)
       inflection
