@@ -3,13 +3,24 @@ class RequestWorker
 
 
   def perform_rpc_request(req)
-    cmd = "#{req.klass}##{req.verb}(#{req.params.join(', ')})"
+    cmd = cmd_line(req)
+    t0  = Time.now
 
     AmqpManager.rails_publish(execute_command req)
-    puts "#{Time.now.utc} :: Perform #{cmd}"
+    puts "#{Time.now.utc} :: #{timestamp_for(t0)} :: Perform #{cmd}"
   rescue => e
     AmqpManager.rails_publish(error_for req, e)
     puts "#{Time.now.utc} :: An error happened for #{cmd}: #{e.message}"
+  end
+
+
+  def cmd_line(req)
+    "#{req.klass}##{req.verb}(#{req.params.join(', ')})"
+  end
+
+
+  def timestamp_for(t0)
+    "#{((Time.now - t0) * 1000).to_i}ms"
   end
 
 
