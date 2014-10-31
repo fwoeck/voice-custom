@@ -1,6 +1,6 @@
 class CustomerSearch
 
-  attr_accessor :opts, :c_opts, :h_opts, :customer_ids, :history
+  attr_reader :opts, :c_opts, :h_opts, :customer_ids, :history
 
 
   def self.search(opts)
