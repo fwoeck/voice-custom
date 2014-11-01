@@ -14,7 +14,7 @@ GEM
     bson (2.3.0)
     builder (3.2.2)
     bundler-unload (1.0.2)
-    bunny (1.6.0)
+    bunny (1.5.1)
       amq-protocol (>= 1.9.2)
     celluloid (0.16.0)
       timers (~> 4.0.0)
@@ -82,7 +82,7 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport
-  bunny
+  bunny (= 1.5.1)
   celluloid
   git-smart
   mongoid
