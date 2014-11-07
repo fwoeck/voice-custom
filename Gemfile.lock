@@ -12,6 +12,7 @@ GEM
       tzinfo (~> 1.1)
     amq-protocol (1.9.2)
     bson (2.3.0)
+    bson (2.3.0-java)
     builder (3.2.2)
     bunny (1.6.2)
       amq-protocol (>= 1.9.2)
@@ -30,9 +31,12 @@ GEM
       multipart-post (>= 1.2, < 3)
     hashie (3.3.1)
     hitimes (1.2.2)
+    hitimes (1.2.2-java)
     i18n (0.6.11)
     inflection (1.0.0)
     json (1.8.1)
+    json (1.8.1-java)
+    march_hare (2.7.0-java)
     mime-types (1.25.1)
     minitest (5.4.2)
     mongoid (4.0.0)
@@ -57,6 +61,7 @@ GEM
     rufus-scheduler (3.0.9)
       tzinfo
     thread_safe (0.3.4)
+    thread_safe (0.3.4-java)
     timers (4.0.1)
       hitimes
     tzinfo (1.2.2)
@@ -70,6 +75,7 @@ GEM
       multipart-post (~> 2.0)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES
