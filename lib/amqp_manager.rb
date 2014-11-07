@@ -1,7 +1,8 @@
 class AmqpManager
   include Celluloid
 
-  TOPICS = [:rails, :custom]
+  USE_JRB = RUBY_PLATFORM =~ /java/
+  TOPICS  = [:rails, :custom]
 
 
   TOPICS.each { |name|
@@ -43,14 +44,31 @@ class AmqpManager
 
 
   def establish_connection
-    @@connection = Bunny.new(
-      host:     Custom.conf['rabbit_host'],
-      user:     Custom.conf['rabbit_user'],
-      password: Custom.conf['rabbit_pass']
-    ).tap { |c| c.start }
+    USE_JRB ? establish_marchhare_connection : establish_bunny_connection
+  end
+
+
+  def establish_marchhare_connection
+    @@connection = MarchHare.connect(amqp_config)
+  rescue MarchHare::ConnectionRefused
+    sleep 1
+    retry
+  end
+
+
+  def establish_bunny_connection
+    @@connection = Bunny.new(amqp_config).tap { |c| c.start }
   rescue Bunny::TCPConnectionFailed
     sleep 1
     retry
+  end
+
+
+  def amqp_config
+    { host:     Custom.conf['rabbit_host'],
+      user:     Custom.conf['rabbit_user'],
+      password: Custom.conf['rabbit_pass']
+    }
   end
 
 
@@ -58,8 +76,8 @@ class AmqpManager
     establish_connection
 
     custom_queue.bind(custom_xchange, routing_key: 'voice.custom')
-    custom_queue.subscribe { |delivery_info, metadata, payload|
-      Marshal.load(payload).handle_message
+    custom_queue.subscribe(blocking: false) { |*args|
+      Marshal.load(USE_JRB ? args[0] : args[2]).handle_message
     } if ENV['SUBSCRIBE_AMQP']
   end
 

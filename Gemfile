@@ -1,10 +1,17 @@
 source 'http://rubygems.org'
 
 gem 'redis'
-gem 'bunny', '1.5.1'    # FIXME 1.6.0 hangs with jruby
 gem 'mongoid'
 gem 'celluloid'
 gem 'zendesk_api'
 gem 'activesupport'
 gem 'rufus-scheduler'
 gem 'mongoid-elasticsearch'
+
+platforms :jruby do
+  gem 'march_hare'
+end
+
+platforms :ruby do
+  gem 'bunny'
+end

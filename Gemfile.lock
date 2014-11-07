@@ -13,7 +13,7 @@ GEM
     amq-protocol (1.9.2)
     bson (2.3.0)
     builder (3.2.2)
-    bunny (1.5.1)
+    bunny (1.6.2)
       amq-protocol (>= 1.9.2)
     celluloid (0.16.0)
       timers (~> 4.0.0)
@@ -74,8 +74,9 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport
-  bunny (= 1.5.1)
+  bunny
   celluloid
+  march_hare
   mongoid
   mongoid-elasticsearch
   redis
