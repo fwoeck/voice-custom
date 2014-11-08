@@ -15,3 +15,8 @@ end
 platforms :ruby do
   gem 'bunny'
 end
+
+group :development do
+  gem 'rspec'
+  gem 'guard-rspec'
+end

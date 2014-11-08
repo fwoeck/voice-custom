@@ -27,8 +27,13 @@ module Custom
   end
 
 
+  def self.skip_crmclient?
+    !Custom.conf['crm_active'] || rails_env == 'test'
+  end
+
+
   def self.setup_crmclient
-    return unless Custom.conf['crm_active']
+    return if skip_crmclient?
 
     @@crmclient = ZendeskAPI::Client.new do |config|
       config.url      = Custom.conf['crm_api_url']

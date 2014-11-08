@@ -1,6 +1,6 @@
 class CustomerSearch
 
-  attr_reader :opts, :c_opts, :h_opts, :customer_ids, :history
+  attr_reader :opts, :c_opts, :h_opts, :customer_ids, :history, :result
 
 
   def self.search(opts)
@@ -9,8 +9,7 @@ class CustomerSearch
 
 
   def self.setup
-    Customer.es.index.create
-    HistoryEntry.es.index.create
+    [Customer, HistoryEntry].each { |klass| klass.es.index.create }
   end
 
 
@@ -46,9 +45,8 @@ class CustomerSearch
   end
 
 
-  def build_query_for(key, size, from=nil)
-    {
-      body: {
+  def query_body_for(key, size)
+    { body: {
         query: {
           query_string: {
             query: opts.fetch(key, '')
@@ -56,15 +54,20 @@ class CustomerSearch
         },
         filter: {bool: {must: []}},
         size:   size
-      }
-    }.tap { |q|
-      q[:body][:filter][:bool][:must] << {
-        range: {
-          created_at: {
-            from: from, to: 'now'
-          }
-        }
-      } if from
+    } }
+  end
+
+
+  def build_query_for(key, size, from=nil)
+    query_body_for(key, size).tap { |hash|
+      add_timerange_to(hash, from) if from
+    }
+  end
+
+
+  def add_timerange_to(hash, from)
+    hash[:body][:filter][:bool][:must] << {
+      range: {created_at: {from: from, to: 'now'}}
     }
   end
 
@@ -83,16 +86,26 @@ class CustomerSearch
   def search
     @customer_ids = find_customer_ids
     @history      = find_history_entries
-    aggregate_customers
+    @result       = aggregate_customers
+  end
+
+
+  def customer_search_for(_opts)
+    Customer.es.search(_opts).results
   end
 
 
   def find_customer_ids
     return [] unless c_query?
-    Customer.es.search(c_opts).results.map(&:id)
+    customer_search_for(c_opts).map(&:id)
   rescue => e
     puts "#{Time.now.utc} :: An error happened: #{e.message}"
     []
+  end
+
+
+  def history_search_for(_opts)
+    HistoryEntry.es.search(_opts).results
   end
 
 
@@ -100,8 +113,7 @@ class CustomerSearch
     return {} unless h_query?
     _opts = scoped_history_query
 
-    HistoryEntry.es.search(_opts).results
-                .group_by { |he| he.customer_id }
+    history_search_for(_opts).group_by { |he| he.customer_id }
   rescue => e
     puts "#{Time.now.utc} :: An error happened: #{e.message}"
     {}
@@ -116,10 +128,15 @@ class CustomerSearch
   end
 
 
-  def filtered_customers
+  def scoped_customer_ids
     keys = c_query? ? customer_ids : (h_query? ? history.keys : [])
     keys = h_query? ? keys.map(&:to_s) & history.keys : keys
-    Customer.where(:_id.in => keys).without('history_entries')
+  end
+
+
+  def filtered_customers
+    Customer.where(:_id.in => scoped_customer_ids)
+            .without('history_entries')
   end
 
 
