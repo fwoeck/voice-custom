@@ -48,16 +48,17 @@ GEM
     hitimes (1.2.2-java)
     i18n (0.6.11)
     inflection (1.0.0)
+    jrjackson (0.2.7)
     json (1.8.1)
     json (1.8.1-java)
-    listen (2.7.11)
+    listen (2.7.12)
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
     lumberjack (1.0.9)
     march_hare (2.7.0-java)
     method_source (0.8.2)
-    mime-types (1.25.1)
+    mime-types (2.4.3)
     minitest (5.4.3)
     mongoid (4.0.0)
       activemodel (~> 4.0)
@@ -74,6 +75,7 @@ GEM
       optionable (~> 0.2.0)
     multi_json (1.10.1)
     multipart-post (2.0.0)
+    oj (2.11.1)
     optionable (0.2.0)
     origin (2.1.1)
     pry (0.10.1)
@@ -114,11 +116,11 @@ GEM
       hitimes
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    zendesk_api (1.4.6)
+    zendesk_api (1.5.1)
       faraday (~> 0.9)
       hashie (>= 1.2, < 4.0)
       inflection
-      mime-types (~> 1.0)
+      mime-types
       multi_json
       multipart-post (~> 2.0)
 
@@ -131,9 +133,12 @@ DEPENDENCIES
   bunny
   celluloid
   guard-rspec
+  jrjackson
   march_hare
   mongoid
   mongoid-elasticsearch
+  multi_json
+  oj
   redis
   rspec
   rufus-scheduler

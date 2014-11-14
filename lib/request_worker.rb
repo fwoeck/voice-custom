@@ -45,10 +45,6 @@ class RequestWorker
 
 
   def self.setup
-    # TODO This will suppress warnings at exit, but could also
-    #      mask potential problems. Try to remove after a while:
-    #
-    Celluloid.logger = nil
     Celluloid::Actor[:rpc] = RequestWorker.pool(size: 32)
   end
 
