@@ -3,17 +3,20 @@ source 'http://rubygems.org'
 gem 'redis'
 gem 'mongoid'
 gem 'celluloid'
+gem 'multi_json'
 gem 'zendesk_api'
 gem 'activesupport'
 gem 'rufus-scheduler'
 gem 'mongoid-elasticsearch'
 
-platforms :jruby do
-  gem 'march_hare'
+platforms :ruby do
+  gem 'oj'
+  gem 'bunny'
 end
 
-platforms :ruby do
-  gem 'bunny'
+platforms :jruby do
+  gem 'jrjackson'
+  gem 'march_hare'
 end
 
 group :development do
