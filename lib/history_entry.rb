@@ -16,13 +16,13 @@ class HistoryEntry
   }
 
 
-  field :tags,        type: Array,    default: -> { [] }
-  field :remarks,     type: String,   default: ""
+  field :tags,        type: Array,  default: -> { [] }
+  field :remarks,     type: String, default: ""
   field :mailbox,     type: String
   field :call_id,     type: String
   field :user_id,     type: Integer
   field :caller_id,   type: String
-  field :created_at,  type: DateTime, default: -> { Time.now.utc }
+  field :created_at,  type: Time,   default: -> { Time.now.utc }
   field :customer_id, type: String
 
   embedded_in :customer
@@ -35,6 +35,10 @@ class HistoryEntry
 
 
   def as_indexed_json
-    serializable_hash.reject { |k, v| %w(_id).include?(k) }
+    serializable_hash.reject { |k, v|
+      %w(_id).include?(k)
+    }.tap { |h|
+      h['created_at'] = h['created_at'].iso8601
+    }
   end
 end

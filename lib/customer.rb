@@ -13,11 +13,11 @@ class Customer
   }
 
 
-  field :email,      type: String,   default: ""
-  field :full_name,  type: String,   default: ""
-  field :caller_ids, type: Array,    default: -> { [] }
-  field :crmuser_id, type: String,   default: ""
-  field :created_at, type: DateTime, default: -> { Time.now.utc }
+  field :email,      type: String, default: ""
+  field :full_name,  type: String, default: ""
+  field :caller_ids, type: Array,  default: -> { [] }
+  field :crmuser_id, type: String, default: ""
+  field :created_at, type: Time,   default: -> { Time.now.utc }
 
   embeds_many :history_entries
   index(caller_ids: 1)
