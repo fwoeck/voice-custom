@@ -19,7 +19,7 @@ GEM
     celluloid (0.16.0)
       timers (~> 4.0.0)
     coderay (1.1.0)
-    connection_pool (2.0.0)
+    connection_pool (2.1.0)
     diff-lcs (1.2.5)
     elasticsearch (1.0.6)
       elasticsearch-api (= 1.0.6)
