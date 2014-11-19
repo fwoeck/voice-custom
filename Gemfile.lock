@@ -69,7 +69,7 @@ GEM
       elasticsearch (~> 1.0.1)
       mongoid (>= 3.0, < 4.1)
       ruby-progressbar
-    moped (2.0.1)
+    moped (2.0.2)
       bson (~> 2.2)
       connection_pool (~> 2.0)
       optionable (~> 0.2.0)
