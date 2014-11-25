@@ -51,7 +51,7 @@ GEM
     jrjackson (0.2.7)
     json (1.8.1)
     json (1.8.1-java)
-    listen (2.8.0)
+    listen (2.8.1)
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
