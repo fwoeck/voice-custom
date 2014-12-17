@@ -34,7 +34,7 @@ GEM
     ffi (1.9.6)
     ffi (1.9.6-java)
     formatador (0.2.5)
-    guard (2.10.3)
+    guard (2.10.4)
       formatador (>= 0.2.4)
       listen (~> 2.7)
       lumberjack (~> 1.0)
